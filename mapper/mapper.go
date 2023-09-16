@@ -98,7 +98,7 @@ func (m *Mapper) parseInnerValue(token domain.Token) (domain.Value, error) {
 
 		return integer, nil
 
-	case domain.TOKEN_STRING | domain.TOKEN_KEY_STRING:
+	case domain.TOKEN_SPECIAL_STRING | domain.TOKEN_SIMPLE_STRING:
 		return parseString(token), nil
 
 	case domain.TOKEN_RESERVED_WORD:

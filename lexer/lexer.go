@@ -103,7 +103,7 @@ func (l *Lexer) parseFull(c rune) error {
 		l.State = STATE_PARSING_RESERVED_WORD
 	case c == QUOTE:
 		l.State = STATE_PARSING_STRING
-		l.CurrentToken.Type = domain.TOKEN_KEY_STRING
+		l.CurrentToken.Type = domain.TOKEN_SIMPLE_STRING
 		l.CurrentToken.Value = string(c)
 	case c == OPEN_BRACE:
 		l.appendToken(domain.Token{Type: domain.TOKEN_OBJECT_OPEN, Value: string(c)})
@@ -143,7 +143,7 @@ func (l *Lexer) parseString(c rune) error {
 		l.CurrentToken.Value += string(c)
 		l.appendToken(l.CurrentToken)
 	case isNonAlphanumeric(c):
-		l.CurrentToken.Type = domain.TOKEN_STRING
+		l.CurrentToken.Type = domain.TOKEN_SPECIAL_STRING
 		l.CurrentToken.Value += string(c)
 	default:
 		l.CurrentToken.Value += string(c)

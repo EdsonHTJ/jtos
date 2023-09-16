@@ -24,7 +24,7 @@ func (m *Mapper) parseArray() (domain.Value, error) {
 		m.TokenIndex--
 		return m.parseIntArray()
 
-	case (domain.TOKEN_STRING | domain.TOKEN_KEY_STRING):
+	case (domain.TOKEN_SPECIAL_STRING | domain.TOKEN_SIMPLE_STRING):
 		m.TokenIndex--
 		return m.parseStringArray()
 

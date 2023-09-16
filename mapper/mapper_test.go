@@ -3,6 +3,7 @@ package mapper_test
 import (
 	"testing"
 
+	"github.com/EdsonHTJ/jtos/domain"
 	"github.com/EdsonHTJ/jtos/lexer"
 	"github.com/EdsonHTJ/jtos/mapper"
 	"github.com/stretchr/testify/require"
@@ -29,6 +30,6 @@ func TestMapperComplexData(t *testing.T) {
 	require.Equal(t, true, object["isMarried"].Data)
 	require.Equal(t, "John", object["children"].Data.([]string)[0])
 	require.Equal(t, "Mary", object["children"].Data.([]string)[1])
-	require.Equal(t, "Mustang", object["car"].Data.(map[string]interface{})["model"])
-	require.Equal(t, 1964, object["car"].Data.(map[string]interface{})["year"])
+	require.Equal(t, "Mustang", object["car"].Data.(domain.Object)["model"].Data)
+	require.Equal(t, 1964, object["car"].Data.(domain.Object)["year"].Data)
 }

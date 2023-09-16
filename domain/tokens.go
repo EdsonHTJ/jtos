@@ -2,17 +2,17 @@ package domain
 
 // List of possible tokens of a json file
 const (
-	TOKEN_OBJECT_OPEN   = iota
-	TOKEN_OBJECT_CLOSE  = iota
-	TOKEN_ARRAY_OPEN    = iota
-	TOKEN_ARRAY_CLOSE   = iota
-	TOKEN_INTEGER       = iota
-	TOKEN_FLOAT         = iota
-	TOKEN_STRING        = iota
-	TOKEN_KEY_STRING    = iota
-	TOKEN_COLON         = iota
-	TOKEN_COMMA         = iota
-	TOKEN_RESERVED_WORD = iota
+	TOKEN_OBJECT_OPEN    TokenType = iota
+	TOKEN_OBJECT_CLOSE   TokenType = iota
+	TOKEN_ARRAY_OPEN     TokenType = iota
+	TOKEN_ARRAY_CLOSE    TokenType = iota
+	TOKEN_INTEGER        TokenType = iota
+	TOKEN_FLOAT          TokenType = iota
+	TOKEN_SPECIAL_STRING TokenType = iota
+	TOKEN_SIMPLE_STRING  TokenType = iota
+	TOKEN_COLON          TokenType = iota
+	TOKEN_COMMA          TokenType = iota
+	TOKEN_RESERVED_WORD  TokenType = iota
 )
 
 type TokenType uint8

@@ -2,16 +2,16 @@ package domain
 
 // List of possible values
 const (
-	VALUE_OBJECT      = iota
-	VALUE_INTEGER     = iota
-	VALUE_STRING      = iota
-	VALUE_FLOAT       = iota
-	VALUE_BOOL        = iota
-	VALUE_NULL        = iota
-	VALUE_ARRAY_INT   = iota
-	VALUE_ARRAY_STR   = iota
-	VALUE_ARRAY_FLOAT = iota
-	VALUE_ARRAY_BOOL  = iota
+	VALUE_OBJECT      ValueType = iota
+	VALUE_INTEGER     ValueType = iota
+	VALUE_STRING      ValueType = iota
+	VALUE_FLOAT       ValueType = iota
+	VALUE_BOOL        ValueType = iota
+	VALUE_NULL        ValueType = iota
+	VALUE_ARRAY_INT   ValueType = iota
+	VALUE_ARRAY_STR   ValueType = iota
+	VALUE_ARRAY_FLOAT ValueType = iota
+	VALUE_ARRAY_BOOL  ValueType = iota
 )
 
 type ValueType uint8

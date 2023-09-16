@@ -61,7 +61,7 @@ func (m *Mapper) expectKeyedString() (string, error) {
 		return "", err
 	}
 
-	if token.Type != domain.TOKEN_KEY_STRING {
+	if token.Type != domain.TOKEN_SIMPLE_STRING {
 		return "", fmt.Errorf("expected key, got %s", token.Value)
 	}
 
@@ -100,7 +100,7 @@ func (m *Mapper) expectString() (string, error) {
 		return "", err
 	}
 
-	if (token.Type != domain.TOKEN_STRING) && (token.Type != domain.TOKEN_KEY_STRING) {
+	if (token.Type != domain.TOKEN_SPECIAL_STRING) && (token.Type != domain.TOKEN_SIMPLE_STRING) {
 		return "", fmt.Errorf("expected string, got %s", token.Value)
 	}
 
