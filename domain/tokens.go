@@ -1,5 +1,6 @@
 package domain
 
+// List of possible tokens of a json file
 const (
 	TOKEN_OBJECT_OPEN   = iota
 	TOKEN_OBJECT_CLOSE  = iota

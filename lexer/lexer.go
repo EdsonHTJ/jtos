@@ -7,11 +7,13 @@ import (
 	"github.com/EdsonHTJ/jtos/domain"
 )
 
+// Alphabet of the lexer
 const (
 	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	digits   = "0123456789"
 )
 
+// Reserved Tokens
 const (
 	OPEN_BRACE  = '{'
 	CLOSE_BRACE = '}'
@@ -23,6 +25,7 @@ const (
 	QUOTE       = '"'
 )
 
+// State of the lexer
 const (
 	STATE_PARSING_INITIAL       = iota
 	STATE_PARSING_STRING        = iota
@@ -40,12 +43,14 @@ type Lexer struct {
 	Line         uint16
 }
 
+// New creates a new lexer
 func New() Lexer {
 	return Lexer{
 		State: STATE_PARSING_INITIAL,
 	}
 }
 
+// GetTokens parse a json string to find and label the tokens
 func (l *Lexer) GetTokens(str string) (domain.TokenList, error) {
 	for _, c := range str {
 		err := l.parse(c)
@@ -61,7 +66,7 @@ func (l *Lexer) parse(c rune) error {
 
 	switch l.State {
 	case STATE_PARSING_INITIAL:
-		return l.parseObject(c)
+		return l.parseFull(c)
 	case STATE_PARSING_STRING:
 		return l.parseString(c)
 	case STATE_PARSING_INTEGER:
@@ -81,7 +86,9 @@ func (l *Lexer) appendToken(token domain.Token) {
 	l.State = STATE_PARSING_INITIAL
 }
 
-func (l *Lexer) parseObject(c rune) error {
+// parseFull the higher level state machine,
+// it parses the full json file and redirects the flow to the specifics states
+func (l *Lexer) parseFull(c rune) error {
 	switch {
 	case isWhitespace(c):
 	case isNewLine(c):

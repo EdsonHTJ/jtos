@@ -1,5 +1,6 @@
 package domain
 
+// List of possible values
 const (
 	VALUE_OBJECT      = iota
 	VALUE_INTEGER     = iota
