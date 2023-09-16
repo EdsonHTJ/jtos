@@ -6,6 +6,11 @@ import (
 )
 
 const (
+	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	digits   = "0123456789"
+)
+
+const (
 	OPEN_BRACE  = '{'
 	CLOSE_BRACE = '}'
 	OPEN_BRACK  = '['
@@ -14,11 +19,6 @@ const (
 	COMMA       = ','
 	PERIOD      = '.'
 	QUOTE       = '"'
-)
-
-const (
-	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	digits   = "0123456789"
 )
 
 const (
