@@ -88,28 +88,28 @@ func (l *Lexer) parseObject(c rune) error {
 		l.Line++
 	case isDigit(c):
 		l.State = STATE_PARSING_INTEGER
-		l.CurrentToken.Type = domain.TYPE_INTEGER
+		l.CurrentToken.Type = domain.TOKEN_INTEGER
 		l.CurrentToken.Value = string(c)
 	case isLetter(c):
-		l.CurrentToken.Type = domain.TYPE_RESERVED_WORD
+		l.CurrentToken.Type = domain.TOKEN_RESERVED_WORD
 		l.CurrentToken.Value = string(c)
 		l.State = STATE_PARSING_RESERVED_WORD
 	case c == QUOTE:
 		l.State = STATE_PARSING_STRING
-		l.CurrentToken.Type = domain.TYPE_KEY_STRING
+		l.CurrentToken.Type = domain.TOKEN_KEY_STRING
 		l.CurrentToken.Value = string(c)
 	case c == OPEN_BRACE:
-		l.appendToken(domain.Token{Type: domain.TYPE_OBJECT_OPEN, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_OBJECT_OPEN, Value: string(c)})
 	case c == CLOSE_BRACE:
-		l.appendToken(domain.Token{Type: domain.TYPE_OBJECT_CLOSE, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_OBJECT_CLOSE, Value: string(c)})
 	case c == OPEN_BRACK:
-		l.appendToken(domain.Token{Type: domain.TYPE_ARRAY_OPEN, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_ARRAY_OPEN, Value: string(c)})
 	case c == CLOSE_BRACK:
-		l.appendToken(domain.Token{Type: domain.TYPE_ARRAY_CLOSE, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_ARRAY_CLOSE, Value: string(c)})
 	case c == COLON:
-		l.appendToken(domain.Token{Type: domain.TYPE_COLON, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_COLON, Value: string(c)})
 	case c == COMMA:
-		l.appendToken(domain.Token{Type: domain.TYPE_COMMA, Value: string(c)})
+		l.appendToken(domain.Token{Type: domain.TOKEN_COMMA, Value: string(c)})
 	default:
 		return fmt.Errorf("Unexpected character '%c' at line %d", c, l.Line)
 	}
@@ -136,7 +136,7 @@ func (l *Lexer) parseString(c rune) error {
 		l.CurrentToken.Value += string(c)
 		l.appendToken(l.CurrentToken)
 	case isNonAlphanumeric(c):
-		l.CurrentToken.Type = domain.TYPE_STRING
+		l.CurrentToken.Type = domain.TOKEN_STRING
 		l.CurrentToken.Value += string(c)
 	default:
 		l.CurrentToken.Value += string(c)
@@ -151,7 +151,7 @@ func (l *Lexer) parseInteger(c rune) error {
 		l.CurrentToken.Value += string(c)
 	case c == PERIOD:
 		l.State = STATE_PARSING_FLOAT
-		l.CurrentToken.Type = domain.TYPE_FLOAT
+		l.CurrentToken.Type = domain.TOKEN_FLOAT
 		l.CurrentToken.Value += string(c)
 	default:
 		l.appendToken(l.CurrentToken)
