@@ -11,8 +11,9 @@ import (
 )
 
 type GoField struct {
-	Name string
-	Type string
+	Name     string
+	Type     string
+	JsonName string
 }
 
 type GoStruct struct {
@@ -58,9 +59,9 @@ func (g *GoGen) ParseObject(name string, object domain.Object) string {
 
 	for _, obj := range objects {
 		if IsPrimitiveValue(obj.Obj) {
-			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj)})
+			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj), JsonName: obj.Name})
 		} else {
-			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj)})
+			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj), JsonName: obj.Name})
 		}
 	}
 
@@ -100,7 +101,7 @@ func (g *GoGen) Generate(packageName string) string {
 	for _, goStruct := range g.Structures {
 		result += "type " + goStruct.Name + " struct {\n"
 		for _, field := range goStruct.Fields {
-			result += "\t" + field.Name + " " + field.Type + "\n"
+			result += "\t" + field.Name + " " + field.Type + " `json:\"" + field.JsonName + "\"` \n"
 		}
 		result += "}\n\n"
 	}
