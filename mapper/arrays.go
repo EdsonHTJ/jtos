@@ -36,6 +36,14 @@ func (m *Mapper) parseArray() (domain.Value, error) {
 		m.TokenIndex--
 		return m.parseObjectArray()
 
+	case domain.TOKEN_RESERVED_WORD:
+		m.TokenIndex--
+		if token.Value == "true" || token.Value == "false" {
+			return m.parseBooleanArray()
+		} else {
+			return domain.Value{}, fmt.Errorf("expected boolean, got %s", token.Value)
+		}
+
 	default:
 		return domain.Value{}, fmt.Errorf("expected integer, string or float, got %s", token.Value)
 	}
@@ -93,6 +101,36 @@ func (m *Mapper) parseFloatArray() (domain.Value, error) {
 		case domain.TOKEN_ARRAY_CLOSE:
 			return domain.Value{
 				Type: domain.VALUE_ARRAY_FLOAT,
+				Data: arr,
+			}, nil
+		default:
+			return domain.Value{}, fmt.Errorf("expected , or ], got %s", token.Value)
+		}
+	}
+}
+
+func (m *Mapper) parseBooleanArray() (domain.Value, error) {
+	arr := make([]bool, 0)
+	for {
+		val, err := m.expectBool()
+		if err != nil {
+			return domain.Value{}, err
+		}
+
+		arr = append(arr, val)
+
+		token, err := m.GetNextToken()
+		if err != nil {
+			return domain.Value{}, err
+		}
+
+		switch token.Type {
+		case domain.TOKEN_COMMA:
+			continue
+
+		case domain.TOKEN_ARRAY_CLOSE:
+			return domain.Value{
+				Type: domain.VALUE_ARRAY_STR,
 				Data: arr,
 			}, nil
 		default:

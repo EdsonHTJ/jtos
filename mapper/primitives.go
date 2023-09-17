@@ -12,36 +12,6 @@ import (
 //The expects functions checks if the next token is the expected one
 //and returns an error if it is not
 
-func (m *Mapper) expectBoolArray() (domain.Value, error) {
-	arr := make([]bool, 0)
-	for {
-		val, err := m.expectBool()
-		if err != nil {
-			return domain.Value{}, err
-		}
-
-		arr = append(arr, val)
-
-		token, err := m.GetNextToken()
-		if err != nil {
-			return domain.Value{}, err
-		}
-
-		switch token.Type {
-		case domain.TOKEN_COMMA:
-			continue
-
-		case domain.TOKEN_ARRAY_CLOSE:
-			return domain.Value{
-				Type: domain.VALUE_ARRAY_BOOL,
-				Data: arr,
-			}, nil
-		default:
-			return domain.Value{}, fmt.Errorf("expected , or ], got %s", token.Value)
-		}
-	}
-}
-
 func (m *Mapper) expectObjectOpen() error {
 	token, err := m.GetNextToken()
 	if err != nil {
@@ -117,14 +87,16 @@ func (m *Mapper) expectBool() (bool, error) {
 		return false, fmt.Errorf("expected true or false, got %s", token.Value)
 	}
 
-	switch token.Value {
-	case BOOLEAN_TRUE:
-		return true, nil
-	case BOOLEAN_FALSE:
-		return false, nil
-	default:
+	value, err := parseReservedWord(token)
+	if err != nil {
+		return false, err
+	}
+
+	if value.Type != domain.VALUE_BOOL {
 		return false, fmt.Errorf("expected true or false, got %s", token.Value)
 	}
+
+	return value.Data.(bool), nil
 }
 
 func (m *Mapper) expectColon() error {

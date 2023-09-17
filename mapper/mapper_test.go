@@ -32,6 +32,35 @@ func TestMapperComplexData(t *testing.T) {
 	require.Equal(t, "Mary", object["children"].Data.([]string)[1])
 	require.Equal(t, "Mustang", object["car"].Data.(domain.Object)["model"].Data)
 	require.Equal(t, 1964, object["car"].Data.(domain.Object)["year"].Data)
+
+}
+
+func TestMapperArrays(t *testing.T) {
+	jsonStr := `{"intArr": [1,2,3], "floatArr": [1.1, 2.2, 3.3], "stringArr": ["a", "b", "c"], "boolArr": [true, false, true]}`
+
+	lexer := lexer.New()
+	tokens, err := lexer.GetTokens(jsonStr)
+	require.NoError(t, err)
+
+	mapper := mapper.New(tokens)
+	object, err := mapper.ParseObject()
+	require.NoError(t, err)
+
+	require.Equal(t, 1, object["intArr"].Data.([]int)[0])
+	require.Equal(t, 2, object["intArr"].Data.([]int)[1])
+	require.Equal(t, 3, object["intArr"].Data.([]int)[2])
+
+	require.Equal(t, 1.1, object["floatArr"].Data.([]float64)[0])
+	require.Equal(t, 2.2, object["floatArr"].Data.([]float64)[1])
+	require.Equal(t, 3.3, object["floatArr"].Data.([]float64)[2])
+
+	require.Equal(t, "a", object["stringArr"].Data.([]string)[0])
+	require.Equal(t, "b", object["stringArr"].Data.([]string)[1])
+	require.Equal(t, "c", object["stringArr"].Data.([]string)[2])
+
+	require.Equal(t, true, object["boolArr"].Data.([]bool)[0])
+	require.Equal(t, false, object["boolArr"].Data.([]bool)[1])
+	require.Equal(t, true, object["boolArr"].Data.([]bool)[2])
 }
 
 func TestMapperArrayOfObject(t *testing.T) {
