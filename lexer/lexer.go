@@ -23,6 +23,7 @@ const (
 	COMMA       = ','
 	PERIOD      = '.'
 	QUOTE       = '"'
+	MINUS       = '-'
 )
 
 // State of the lexer
@@ -93,7 +94,7 @@ func (l *Lexer) parseFull(c rune) error {
 	case isWhitespace(c):
 	case isNewLine(c):
 		l.Line++
-	case isDigit(c):
+	case (isDigit(c) || c == MINUS):
 		l.State = STATE_PARSING_INTEGER
 		l.CurrentToken.Type = domain.TOKEN_INTEGER
 		l.CurrentToken.Value = string(c)

@@ -32,6 +32,10 @@ func (m *Mapper) parseArray() (domain.Value, error) {
 		m.TokenIndex--
 		return m.parseFloatArray()
 
+	case domain.TOKEN_OBJECT_OPEN:
+		m.TokenIndex--
+		return m.parseObjectArray()
+
 	default:
 		return domain.Value{}, fmt.Errorf("expected integer, string or float, got %s", token.Value)
 	}
@@ -120,6 +124,59 @@ func (m *Mapper) parseStringArray() (domain.Value, error) {
 			return domain.Value{
 				Type: domain.VALUE_ARRAY_STR,
 				Data: arr,
+			}, nil
+		default:
+			return domain.Value{}, fmt.Errorf("expected , or ], got %s", token.Value)
+		}
+	}
+}
+
+func (m *Mapper) parseObjectArray() (domain.Value, error) {
+	arr := make([]domain.Object, 0)
+
+	objFields := domain.Object{}
+	for {
+		val, err := m.ParseObject()
+		if err != nil {
+			return domain.Value{}, err
+		}
+
+		for k, v := range val {
+			objFields[k] = domain.Value{
+				Type: v.Type,
+				Data: nil,
+			}
+		}
+
+		arr = append(arr, val)
+
+		token, err := m.GetNextToken()
+		if err != nil {
+			return domain.Value{}, err
+		}
+
+		switch token.Type {
+		case domain.TOKEN_COMMA:
+			continue
+
+		case domain.TOKEN_ARRAY_CLOSE:
+			ajustedArr := make([]domain.Object, 0)
+			for _, itr := range arr {
+				ajustedObj := domain.Object{}
+
+				for k, v := range objFields {
+					ajustedObj[k] = v
+				}
+
+				for k, v := range itr {
+					ajustedObj[k] = v
+				}
+				ajustedArr = append(ajustedArr, ajustedObj)
+			}
+
+			return domain.Value{
+				Type: domain.VALUE_ARRAY_OBJ,
+				Data: ajustedArr,
 			}, nil
 		default:
 			return domain.Value{}, fmt.Errorf("expected , or ], got %s", token.Value)

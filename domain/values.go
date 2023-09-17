@@ -12,6 +12,7 @@ const (
 	VALUE_ARRAY_STR   ValueType = iota
 	VALUE_ARRAY_FLOAT ValueType = iota
 	VALUE_ARRAY_BOOL  ValueType = iota
+	VALUE_ARRAY_OBJ   ValueType = iota
 )
 
 type ValueType uint8

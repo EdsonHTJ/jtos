@@ -33,3 +33,20 @@ func TestMapperComplexData(t *testing.T) {
 	require.Equal(t, "Mustang", object["car"].Data.(domain.Object)["model"].Data)
 	require.Equal(t, 1964, object["car"].Data.(domain.Object)["year"].Data)
 }
+
+func TestMapperArrayOfObject(t *testing.T) {
+	jsonstr := `{"data":[{"first": "Thomas", "age": -25}, {"name": "Mary", "age": 20}]}`
+
+	lexer := lexer.New()
+	tokens, err := lexer.GetTokens(jsonstr)
+	require.NoError(t, err)
+
+	mapper := mapper.New(tokens)
+	object, err := mapper.ParseObject()
+	require.NoError(t, err)
+
+	require.Equal(t, "Thomas", object["data"].Data.([]domain.Object)[0]["first"].Data)
+	require.Equal(t, -25, object["data"].Data.([]domain.Object)[0]["age"].Data)
+	require.Equal(t, "Mary", object["data"].Data.([]domain.Object)[1]["name"].Data)
+	require.Equal(t, 20, object["data"].Data.([]domain.Object)[1]["age"].Data)
+}
