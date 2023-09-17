@@ -1,0 +1,317 @@
+{"data":[
+    {
+      "_id": "65068b26dd7c8f3e5d1bbd47",
+      "index": 0,
+      "guid": "11be4a39-250d-4976-918e-7e98af03063d",
+      "isActive": true,
+      "balance": "$3,778.26",
+      "picture": "http://placehold.it/32x32",
+      "age": 37,
+      "eyeColor": "green",
+      "name": "Pierce Hart",
+      "gender": "male",
+      "company": "BITTOR",
+      "email": "piercehart@bittor.com",
+      "phone": "+1 (995) 407-3248",
+      "address": "535 Utica Avenue, Ilchester, Maryland, 2216",
+      "about": "Sint magna laborum id ullamco culpa consequat. Est ullamco eiusmod ea eiusmod. Consequat cupidatat adipisicing cupidatat ut consequat. Proident fugiat mollit nulla magna sint excepteur ipsum est enim adipisicing nisi fugiat laborum. Ipsum ullamco officia ea duis ullamco culpa ullamco laboris qui velit eiusmod reprehenderit.\r",
+      "registered": "2016-10-21T04:14:19 +02:00",
+      "latitude": 10.930968,
+      "longitude": 72.102948,
+      "tags": [
+        "commodo",
+        "aliquip",
+        "incididunt",
+        "aute",
+        "nulla",
+        "dolor",
+        "magna"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Cecile Castro"
+        },
+        {
+          "id": 1,
+          "name": "Patel Compton"
+        },
+        {
+          "id": 2,
+          "name": "Gallegos England"
+        }
+      ],
+      "greeting": "Hello, Pierce Hart! You have 7 unread messages.",
+      "favoriteFruit": "apple"
+    },
+    {
+      "_id": "65068b26ec0865f38c48f0e6",
+      "index": 1,
+      "guid": "d769dd1e-a879-43e5-8de6-5b250241203b",
+      "isActive": false,
+      "balance": "$3,331.12",
+      "picture": "http://placehold.it/32x32",
+      "age": 33,
+      "eyeColor": "blue",
+      "name": "Ivy Arnold",
+      "gender": "female",
+      "company": "LEXICONDO",
+      "email": "ivyarnold@lexicondo.com",
+      "phone": "+1 (870) 569-2834",
+      "address": "273 Provost Street, Swartzville, Michigan, 5761",
+      "about": "Et officia officia tempor reprehenderit enim. Nisi consectetur consequat dolore qui qui. Id do laboris amet deserunt do. Ullamco reprehenderit dolor mollit elit sunt enim consequat in qui adipisicing. Occaecat aliqua ullamco labore ipsum reprehenderit ullamco cillum irure amet dolore commodo ea magna et.\r",
+      "registered": "2023-08-12T11:00:30 +03:00",
+      "latitude": 43.820647,
+      "longitude": -7.482367,
+      "tags": [
+        "ea",
+        "ut",
+        "aliquip",
+        "enim",
+        "esse",
+        "eu",
+        "quis"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "York Clay"
+        },
+        {
+          "id": 1,
+          "name": "Daniels Carr"
+        },
+        {
+          "id": 2,
+          "name": "Espinoza Lancaster"
+        }
+      ],
+      "greeting": "Hello, Ivy Arnold! You have 10 unread messages.",
+      "favoriteFruit": "banana"
+    },
+    {
+      "_id": "65068b26e2d7706de28a2ae3",
+      "index": 2,
+      "guid": "c77f3d26-7fc8-4658-8695-ad4d4604bc43",
+      "isActive": false,
+      "balance": "$3,302.14",
+      "picture": "http://placehold.it/32x32",
+      "age": 27,
+      "eyeColor": "green",
+      "name": "Russell Horn",
+      "gender": "male",
+      "company": "TELLIFLY",
+      "email": "russellhorn@tellifly.com",
+      "phone": "+1 (885) 404-3257",
+      "address": "215 Harrison Place, Malo, Mississippi, 8536",
+      "about": "Culpa occaecat consequat consequat fugiat in pariatur labore minim. Culpa qui incididunt culpa ut pariatur officia nulla. Pariatur ipsum esse irure voluptate velit nulla laboris et culpa exercitation in fugiat do. Et commodo dolore cupidatat labore ex duis.\r",
+      "registered": "2018-11-28T07:10:12 +02:00",
+      "latitude": -87.320816,
+      "longitude": 20.609007,
+      "tags": [
+        "consectetur",
+        "veniam",
+        "sit",
+        "ad",
+        "adipisicing",
+        "deserunt",
+        "eu"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Emerson Gallagher"
+        },
+        {
+          "id": 1,
+          "name": "Hinton Dunn"
+        },
+        {
+          "id": 2,
+          "name": "Sweet Blanchard"
+        }
+      ],
+      "greeting": "Hello, Russell Horn! You have 9 unread messages.",
+      "favoriteFruit": "apple"
+    },
+    {
+      "_id": "65068b2677c9d05d95fc26f8",
+      "index": 3,
+      "guid": "c4dbf3a0-a94e-4697-9207-8563b7ae87c1",
+      "isActive": true,
+      "balance": "$2,205.37",
+      "picture": "http://placehold.it/32x32",
+      "age": 34,
+      "eyeColor": "green",
+      "name": "Rebekah Benson",
+      "gender": "female",
+      "company": "MAGNAFONE",
+      "email": "rebekahbenson@magnafone.com",
+      "phone": "+1 (936) 425-2582",
+      "address": "928 Kent Avenue, Jacumba, Colorado, 1176",
+      "about": "Minim aute consectetur esse sit est ullamco consequat ullamco veniam. Nisi quis cillum in duis. Incididunt irure cupidatat aliquip ad est aliqua. Ut occaecat proident nisi proident reprehenderit eiusmod ut excepteur nulla ea eiusmod.\r",
+      "registered": "2017-11-25T06:36:16 +02:00",
+      "latitude": 41.048624,
+      "longitude": 119.749004,
+      "tags": [
+        "pariatur",
+        "duis",
+        "voluptate",
+        "do",
+        "minim",
+        "quis",
+        "consequat"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Josefina Kerr"
+        },
+        {
+          "id": 1,
+          "name": "Shirley Pugh"
+        },
+        {
+          "id": 2,
+          "name": "Hester Tanner"
+        }
+      ],
+      "greeting": "Hello, Rebekah Benson! You have 4 unread messages.",
+      "favoriteFruit": "strawberry"
+    },
+    {
+      "_id": "65068b26b32ea203d08d67f3",
+      "index": 4,
+      "guid": "dc541755-b718-4ea2-be03-ecb1bbb94b84",
+      "isActive": true,
+      "balance": "$1,600.40",
+      "picture": "http://placehold.it/32x32",
+      "age": 30,
+      "eyeColor": "brown",
+      "name": "Lucille Shannon",
+      "gender": "female",
+      "company": "COMBOGENE",
+      "email": "lucilleshannon@combogene.com",
+      "phone": "+1 (841) 569-2740",
+      "address": "765 Court Square, Saddlebrooke, District Of Columbia, 7141",
+      "about": "Aliqua consequat do sunt laborum. Quis consectetur commodo pariatur reprehenderit exercitation dolor officia aliqua ut aliqua ea magna. Aute eiusmod qui esse reprehenderit sunt et magna minim est. Velit magna quis cupidatat proident irure ea elit non ut magna.\r",
+      "registered": "2021-08-22T12:06:24 +03:00",
+      "latitude": 16.737005,
+      "longitude": 16.950437,
+      "tags": [
+        "officia",
+        "ex",
+        "commodo",
+        "mollit",
+        "duis",
+        "nostrud",
+        "laborum"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Villarreal Castillo"
+        },
+        {
+          "id": 1,
+          "name": "Calhoun Fowler"
+        },
+        {
+          "id": 2,
+          "name": "Gayle Mcconnell"
+        }
+      ],
+      "greeting": "Hello, Lucille Shannon! You have 2 unread messages.",
+      "favoriteFruit": "banana"
+    },
+    {
+      "_id": "65068b26c208b807c9ce71c6",
+      "index": 5,
+      "guid": "1f1a0fad-1934-4575-a3d4-7e55caf31813",
+      "isActive": true,
+      "balance": "$1,157.92",
+      "picture": "http://placehold.it/32x32",
+      "age": 38,
+      "eyeColor": "blue",
+      "name": "Bond Rios",
+      "gender": "male",
+      "company": "CODACT",
+      "email": "bondrios@codact.com",
+      "phone": "+1 (887) 541-2234",
+      "address": "735 Williams Court, Cetronia, Palau, 8169",
+      "about": "Aliquip deserunt ex adipisicing minim magna adipisicing nostrud ipsum ea. Sint officia culpa quis duis cillum voluptate non nostrud ex dolor. Deserunt magna eu occaecat sunt incididunt laborum irure eiusmod in pariatur do. Ut Lorem cupidatat ipsum aute labore enim do est do do. Laborum Lorem voluptate proident ex dolore ipsum ex anim ut labore nulla.\r",
+      "registered": "2022-01-16T04:30:17 +03:00",
+      "latitude": 11.409022,
+      "longitude": 121.887413,
+      "tags": [
+        "dolore",
+        "occaecat",
+        "deserunt",
+        "commodo",
+        "officia",
+        "velit",
+        "ex"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Fitzpatrick Gomez"
+        },
+        {
+          "id": 1,
+          "name": "Cantrell Moon"
+        },
+        {
+          "id": 2,
+          "name": "Mcpherson Stone"
+        }
+      ],
+      "greeting": "Hello, Bond Rios! You have 6 unread messages.",
+      "favoriteFruit": "banana"
+    },
+    {
+      "_id": "65068b262569a3fbfd36a2d6",
+      "index": 6,
+      "guid": "d8ccdb9d-c921-468c-bf33-d8c0ec975d30",
+      "isActive": true,
+      "balance": "$1,685.28",
+      "picture": "http://placehold.it/32x32",
+      "age": 30,
+      "eyeColor": "blue",
+      "name": "Talley Guy",
+      "gender": "male",
+      "company": "SLAMBDA",
+      "email": "talleyguy@slambda.com",
+      "phone": "+1 (910) 454-2576",
+      "address": "371 McKinley Avenue, Summerset, Florida, 6028",
+      "about": "Est incididunt magna esse sit do magna qui voluptate elit tempor sit magna magna. Laboris pariatur fugiat excepteur cillum aliqua consectetur excepteur excepteur duis duis adipisicing fugiat. Nulla adipisicing voluptate aliquip velit ea laboris eiusmod exercitation anim sint in laboris magna. Enim ad sint mollit amet nulla tempor ea ipsum consequat. Duis laboris ea sunt id Lorem voluptate reprehenderit reprehenderit adipisicing id in consectetur elit.\r",
+      "registered": "2014-11-25T08:18:51 +02:00",
+      "latitude": -81.679096,
+      "longitude": -124.413419,
+      "tags": [
+        "commodo",
+        "sunt",
+        "ea",
+        "adipisicing",
+        "duis",
+        "consequat",
+        "fugiat"
+      ],
+      "friends": [
+        {
+          "id": 0,
+          "name": "Barlow Huff"
+        },
+        {
+          "id": 1,
+          "name": "Tyler Sharp"
+        },
+        {
+          "id": 2,
+          "name": "Madelyn Patrick"
+        }
+      ],
+      "greeting": "Hello, Talley Guy! You have 4 unread messages.",
+      "favoriteFruit": "strawberry"
+    }
+  ]}

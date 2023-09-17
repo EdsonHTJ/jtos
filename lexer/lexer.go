@@ -9,7 +9,7 @@ import (
 
 // Alphabet of the lexer
 const (
-	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 	digits   = "0123456789"
 )
 
@@ -188,7 +188,7 @@ func isNewLine(c rune) bool {
 }
 
 func isWhitespace(c rune) bool {
-	return c == ' ' || c == '\t'
+	return c == ' ' || c == '\t' || c == '\r'
 }
 
 func isNonAlphanumeric(c rune) bool {

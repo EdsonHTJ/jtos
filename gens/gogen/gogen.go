@@ -3,6 +3,9 @@ package gogen
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"sort"
+	"strings"
+	"unicode"
 
 	"github.com/EdsonHTJ/jtos/domain"
 )
@@ -28,20 +31,91 @@ func (g *GoStruct) CalcHash() string {
 }
 
 type GoGen struct {
-	Output     string
 	Structures map[string]GoStruct
 }
 
-func New() *GoGen {
-	return &GoGen{Output: "", Structures: map[string]GoStruct{}}
+type GoGenObject struct {
+	Name string
+	Obj  domain.Value
 }
 
-func (g *GoGen) ParseObject(name string, object domain.Object) {
-	// //goStruct := GoStruct{Name: name, Fields: []GoField{}}
-	// for k, v := range object {
-	// 	goStruct.Fields = append(goStruct.Fields, GoField{Name: k, Type: g.parseValueType(v.Type)})
-	// }
+func New() *GoGen {
+	return &GoGen{Structures: map[string]GoStruct{}}
+}
 
+func (g *GoGen) ParseObject(name string, object domain.Object) string {
+	newName := toCamelCase(name)
+	goStruct := GoStruct{Name: newName, Fields: []GoField{}}
+
+	objects := make([]GoGenObject, 0)
+	for k, v := range object {
+		objects = append(objects, GoGenObject{Name: k, Obj: v})
+	}
+
+	sort.Slice(objects, func(i, j int) bool {
+		return objects[i].Name < objects[j].Name
+	})
+
+	for _, obj := range objects {
+		if IsPrimitiveValue(obj.Obj) {
+			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj)})
+		} else {
+			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj)})
+		}
+	}
+
+	sort.Slice(goStruct.Fields, func(i, j int) bool {
+		return goStruct.Fields[i].Name < goStruct.Fields[j].Name
+	})
+
+	structure, ok := g.Structures[goStruct.CalcHash()]
+	if !ok {
+		g.Structures[goStruct.CalcHash()] = goStruct
+	} else {
+		newName = structure.Name
+	}
+
+	return newName
+}
+
+func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) string {
+	switch value.Type {
+	case domain.VALUE_OBJECT:
+		return g.ParseObject(key, value.Data.(domain.Object))
+	case domain.VALUE_ARRAY_OBJ:
+		valueArray := value.Data.([]domain.Object)
+		if len(valueArray) > 0 {
+			return "[]" + g.ParseObject(key, valueArray[0])
+		} else {
+			return "interface{}"
+		}
+	default:
+		return "interface{}"
+	}
+}
+
+func (g *GoGen) Generate(packageName string) string {
+	result := ""
+	result += "package " + packageName + "\n\n"
+	for _, goStruct := range g.Structures {
+		result += "type " + goStruct.Name + " struct {\n"
+		for _, field := range goStruct.Fields {
+			result += "\t" + field.Name + " " + field.Type + "\n"
+		}
+		result += "}\n\n"
+	}
+
+	return result
+}
+
+func IsPrimitiveValue(value domain.Value) bool {
+	switch value.Type {
+	case domain.VALUE_INTEGER, domain.VALUE_STRING, domain.VALUE_FLOAT, domain.VALUE_BOOL,
+		domain.VALUE_ARRAY_BOOL, domain.VALUE_ARRAY_FLOAT, domain.VALUE_ARRAY_INT, domain.VALUE_ARRAY_STR, domain.VALUE_NULL:
+		return true
+	default:
+		return false
+	}
 }
 
 func ParsePrimitiveValue(value domain.Value) string {
@@ -56,7 +130,25 @@ func ParsePrimitiveValue(value domain.Value) string {
 		return "bool"
 	case domain.VALUE_NULL:
 		return "interface{}"
+	case domain.VALUE_ARRAY_INT:
+		return "[]int32"
+	case domain.VALUE_ARRAY_STR:
+		return "[]string"
+	case domain.VALUE_ARRAY_FLOAT:
+		return "[]float64"
 	default:
 		return "interface{}"
 	}
+}
+
+func toCamelCase(s string) string {
+	words := strings.FieldsFunc(s, func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
+	})
+
+	for i, word := range words {
+		words[i] = strings.Title(word)
+	}
+
+	return strings.Join(words, "")
 }
