@@ -11,9 +11,10 @@ import (
 )
 
 type GoField struct {
-	Name     string
-	Type     string
-	JsonName string
+	Name        string
+	Type        string
+	JsonName    string
+	IsPrimitive bool
 }
 
 type GoStruct struct {
@@ -59,14 +60,18 @@ func (g *GoGen) ParseObject(name string, object domain.Object) string {
 
 	for _, obj := range objects {
 		if IsPrimitiveValue(obj.Obj) {
-			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj), JsonName: obj.Name})
+			goStruct.Fields = append(goStruct.Fields, GoField{IsPrimitive: true, Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj), JsonName: obj.Name})
 		} else {
-			goStruct.Fields = append(goStruct.Fields, GoField{Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj), JsonName: obj.Name})
+			goStruct.Fields = append(goStruct.Fields, GoField{IsPrimitive: false, Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj), JsonName: obj.Name})
 		}
 	}
 
 	sort.Slice(goStruct.Fields, func(i, j int) bool {
-		return goStruct.Fields[i].Name < goStruct.Fields[j].Name
+		if goStruct.Fields[i].IsPrimitive == goStruct.Fields[j].IsPrimitive {
+			return goStruct.Fields[i].Name < goStruct.Fields[j].Name
+		}
+
+		return goStruct.Fields[i].IsPrimitive
 	})
 
 	structure, ok := g.Structures[goStruct.CalcHash()]
@@ -97,8 +102,18 @@ func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) string {
 
 func (g *GoGen) Generate(packageName string) string {
 	result := ""
-	result += "package " + packageName + "\n\n"
+
+	structs := make([]GoStruct, 0)
 	for _, goStruct := range g.Structures {
+		structs = append(structs, goStruct)
+	}
+
+	sort.Slice(structs, func(i, j int) bool {
+		return len(structs[i].Fields) > (len(structs[j].Fields))
+	})
+
+	result += "package " + packageName + "\n\n"
+	for _, goStruct := range structs {
 		result += "type " + goStruct.Name + " struct {\n"
 		for _, field := range goStruct.Fields {
 			result += "\t" + field.Name + " " + field.Type + " `json:\"" + field.JsonName + "\"` \n"
