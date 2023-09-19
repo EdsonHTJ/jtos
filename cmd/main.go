@@ -33,7 +33,9 @@ func Root() *cobra.Command {
 				mainStructName = packageName
 			}
 
-			response, err := jtos.ParseJsonFile(packageName, mainStructName, inputFile, jtos.GOLANG_GENERATOR)
+			fileData, err := os.ReadFile(inputFile)
+
+			response, err := jtos.ParseJsonFile(packageName, mainStructName, string(fileData), jtos.GOLANG_GENERATOR)
 			if err != nil {
 				fmt.Println("error on parse:", err)
 				os.Exit(1)
