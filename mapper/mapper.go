@@ -48,37 +48,46 @@ func (m *Mapper) ParseObject() (domain.Object, error) {
 
 	err := m.expectObjectOpen()
 	if err != nil {
-		return domain.Object{}, err
+		return nil, err
 	}
+
+	token, err := m.GetNextToken()
+	if err != nil {
+		return nil, err
+	}
+
+	if token.Type == domain.TOKEN_OBJECT_CLOSE {
+		return nil, nil
+	}
+
+	m.TokenIndex--
 
 	for {
 		keyName, err := m.expectKeyedString()
 		if err != nil {
-			return domain.Object{}, err
+			return nil, err
 		}
 
 		err = m.expectColon()
 		if err != nil {
-			return domain.Object{}, err
+			return nil, err
 		}
 
 		token, err := m.GetNextToken()
 		if err != nil {
-			return domain.Object{}, err
+			return nil, err
 		}
 
 		innerValue, err := m.parseInnerValue(token)
 		if err != nil {
-			return domain.Object{}, err
+			return nil, err
 		}
 
-		if innerValue.Type != domain.VALUE_NULL {
-			object[keyName] = innerValue
-		}
+		object[keyName] = innerValue
 
 		token, err = m.GetNextToken()
 		if err != nil {
-			return domain.Object{}, err
+			return nil, err
 		}
 
 		switch token.Type {
@@ -87,7 +96,7 @@ func (m *Mapper) ParseObject() (domain.Object, error) {
 		case domain.TOKEN_OBJECT_CLOSE:
 			return object, nil
 		default:
-			return domain.Object{}, fmt.Errorf("expected , or }, got %s", token.Value)
+			return nil, fmt.Errorf("expected , or }, got %s", token.Value)
 		}
 	}
 }
@@ -127,6 +136,13 @@ func (m *Mapper) parseInnerValue(token domain.Token) (domain.Value, error) {
 		innerObj, err := m.ParseObject()
 		if err != nil {
 			return domain.Value{}, err
+		}
+
+		if innerObj == nil {
+			return domain.Value{
+				Type: domain.VALUE_NULL,
+				Data: nil,
+			}, nil
 		}
 
 		return domain.Value{

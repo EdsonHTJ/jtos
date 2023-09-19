@@ -30,7 +30,7 @@ var generators = map[GeneratorCode]gens.Generator{
 func RunLexerAndMapper(json string) (domain.Object, error) {
 	tokens, err := lexer.GetTokens(json)
 	if err != nil {
-		return domain.Object{}, err
+		return nil, err
 	}
 
 	return mapper.MapTokensToObject(tokens)
