@@ -124,6 +124,10 @@ func (g *GoGen) Generate(packageName string) string {
 	return result
 }
 
+func (g *GoGen) GetOutPath(packageName string) string {
+	return packageName + "/" + packageName + ".go"
+}
+
 func IsPrimitiveValue(value domain.Value) bool {
 	switch value.Type {
 	case domain.VALUE_INTEGER, domain.VALUE_STRING, domain.VALUE_FLOAT, domain.VALUE_BOOL,

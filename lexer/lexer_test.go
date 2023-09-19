@@ -12,8 +12,7 @@ func TestLexer(t *testing.T) {
 	jsonstr := `{"name": "Thomas d'ante", "age": 25, "height": 1.75, "weight": 70.5, "money": -1.45,
 	 "children": [{"name":"jhon"}, {"name": "mary"}], "married": true}`
 
-	l := lexer.New()
-	tokens, err := l.GetTokens(jsonstr)
+	tokens, err := lexer.GetTokens(jsonstr)
 	require.NoError(t, err)
 
 	require.Equal(t, "{", tokens[0].Value)

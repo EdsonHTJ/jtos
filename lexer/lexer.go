@@ -44,6 +44,11 @@ type Lexer struct {
 	Line         uint16
 }
 
+func GetTokens(input string) (domain.TokenList, error) {
+	l := New()
+	return l.GetTokens(input)
+}
+
 // New creates a new lexer
 func New() Lexer {
 	return Lexer{

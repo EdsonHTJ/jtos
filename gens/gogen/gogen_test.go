@@ -21,12 +21,10 @@ func TestGogenParse(t *testing.T) {
 	 "year": 1964}, "fourthcar": {"model": "Mustang",
 	 "year": 1964}}`
 
-	lexer := lexer.New()
 	tokens, err := lexer.GetTokens(jsonstr)
 	require.NoError(t, err)
 
-	mapper := mapper.New(tokens)
-	object, err := mapper.ParseObject()
+	object, err := mapper.MapTokensToObject(tokens)
 	require.NoError(t, err)
 
 	gogen := gogen.New()

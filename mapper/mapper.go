@@ -11,6 +11,11 @@ type Mapper struct {
 	TokenIndex uint32
 }
 
+func MapTokensToObject(tokenList domain.TokenList) (domain.Object, error) {
+	mapper := New(tokenList)
+	return mapper.ParseObject()
+}
+
 func New(tokenList domain.TokenList) Mapper {
 	return Mapper{
 		TokenList:  tokenList,

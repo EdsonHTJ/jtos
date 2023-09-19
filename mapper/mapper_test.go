@@ -15,12 +15,10 @@ func TestMapperComplexData(t *testing.T) {
 	 "isMarried": true, "children": ["John", "Mary"], "car": {"model": "Mustang",
 	 "year": 1964}}`
 
-	lexer := lexer.New()
 	tokens, err := lexer.GetTokens(jsonstr)
 	require.NoError(t, err)
 
-	mapper := mapper.New(tokens)
-	object, err := mapper.ParseObject()
+	object, err := mapper.MapTokensToObject(tokens)
 
 	require.NoError(t, err)
 	require.Equal(t, "Thomas", object["name"].Data)
@@ -38,12 +36,10 @@ func TestMapperComplexData(t *testing.T) {
 func TestMapperArrays(t *testing.T) {
 	jsonStr := `{"intArr": [1,2,3], "floatArr": [1.1, 2.2, 3.3], "stringArr": ["a", "b", "c"], "boolArr": [true, false, true]}`
 
-	lexer := lexer.New()
 	tokens, err := lexer.GetTokens(jsonStr)
 	require.NoError(t, err)
 
-	mapper := mapper.New(tokens)
-	object, err := mapper.ParseObject()
+	object, err := mapper.MapTokensToObject(tokens)
 	require.NoError(t, err)
 
 	require.Equal(t, 1, object["intArr"].Data.([]int)[0])
@@ -66,7 +62,6 @@ func TestMapperArrays(t *testing.T) {
 func TestMapperArrayOfObject(t *testing.T) {
 	jsonstr := `{"data":[{"first": "Thomas", "age": -25}, {"name": "Mary", "age": 20}]}`
 
-	lexer := lexer.New()
 	tokens, err := lexer.GetTokens(jsonstr)
 	require.NoError(t, err)
 
