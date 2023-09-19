@@ -117,7 +117,7 @@ func (g *GoGen) Generate(packageName string) string {
 		result += "type " + goStruct.Name + " struct {\n"
 		for _, field := range goStruct.Fields {
 			result += "\t" + field.Name + " " +
-				field.Type + " `json:\"" + field.JsonName + ",omitempty\"`\n"
+				field.Type + " `json:\"" + field.JsonName + "\"`\n"
 		}
 		result += "}\n\n"
 	}
