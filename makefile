@@ -10,5 +10,5 @@ all:
 	go run ./cmd
 
 build:
-	go build  -o jtos ./cmd
+	go build  -o bin/jtos ./cmd
 
