@@ -158,8 +158,15 @@ func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
 		objects = append(objects, GoGenObject{Name: k, Obj: v})
 	}
 
-	// Sort the slice of objects by name
+	// Sort the slice of objects by lenght
+	// This sort is needed because different fields can have the same structure signature
+	// For example a field with name Transactions and PendingTransactions, both this fields should have the
+	// same structure signature of Transactions: []Transaction
 	sort.Slice(objects, func(i, j int) bool {
+		if len(objects[i].Name) != len(objects[j].Name) {
+			return len(objects[i].Name) < len(objects[j].Name)
+		}
+
 		return objects[i].Name < objects[j].Name
 	})
 
