@@ -68,8 +68,9 @@ func (l *Lexer) GetTokens(str string) (domain.TokenList, error) {
 	return l.Tokens, nil
 }
 
+// parse is the lower level state machine,
+// it parses a single character and redirects the flow to the specifics states
 func (l *Lexer) parse(c rune) error {
-
 	switch l.State {
 	case STATE_PARSING_INITIAL:
 		return l.parseFull(c)

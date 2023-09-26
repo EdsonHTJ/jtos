@@ -48,7 +48,7 @@ func ParseJsonFile(packageName string, mainStruct string, json string, generator
 	}
 
 	response := ParseResponse{}
-	gen.ParseObject(mainStruct, object)
+	gen.InsertObject(mainStruct, object)
 	response.Output = gen.Generate(packageName)
 	response.RecomendedPath = gen.GetOutPath(packageName)
 
