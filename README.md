@@ -12,7 +12,7 @@ Copy code
 Before you can use `jtos`, you need to install it. The currently only installation possible is through go install:
 
 ```
-go install github.com/EdsonHTJ/jtos/cmd/jtos@v0.1.1
+go install github.com/EdsonHTJ/jtos/cmd/jtos@latest
 ```
 
 ## Usage
