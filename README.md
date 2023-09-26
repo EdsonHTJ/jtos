@@ -55,6 +55,3 @@ jtos --input=sample.json --out=output/path --package=samplePkg --struct=SampleSt
 
 Contributions are welcome! Please create an issue or open a pull request if you have changes or improvements.
 
-## License
-
-This project is licensed under the MIT License.
