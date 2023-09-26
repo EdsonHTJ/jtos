@@ -27,7 +27,7 @@ var generators = map[GeneratorCode]gens.Generator{
 	GOLANG_GENERATOR: gogen.New(),
 }
 
-func RunLexerAndMapper(json string) (domain.Object, error) {
+func Unmarshal(json string) (domain.Object, error) {
 	tokens, err := lexer.GetTokens(json)
 	if err != nil {
 		return nil, err
@@ -36,8 +36,10 @@ func RunLexerAndMapper(json string) (domain.Object, error) {
 	return mapper.MapTokensToObject(tokens)
 }
 
+//TODO: add marshal
+
 func ParseJsonFile(packageName string, mainStruct string, json string, generatorCode GeneratorCode) (ParseResponse, error) {
-	object, err := RunLexerAndMapper(json)
+	object, err := Unmarshal(json)
 	if err != nil {
 		return ParseResponse{}, err
 	}
