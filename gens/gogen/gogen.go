@@ -182,7 +182,11 @@ func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
 	// The primitive types are sorted first
 	sort.Slice(goStruct.Fields, func(i, j int) bool {
 		if goStruct.Fields[i].IsPrimitive == goStruct.Fields[j].IsPrimitive {
-			return goStruct.Fields[i].Name < goStruct.Fields[j].Name
+			if len(objects[i].Name) != len(objects[j].Name) {
+				return len(objects[i].Name) < len(objects[j].Name)
+			}
+
+			return objects[i].Name < objects[j].Name
 		}
 
 		return goStruct.Fields[i].IsPrimitive
