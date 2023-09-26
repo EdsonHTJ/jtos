@@ -3,57 +3,162 @@ package gogen
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"os"
 	"sort"
-	"strings"
-	"unicode"
 
 	"github.com/EdsonHTJ/jtos/domain"
 )
 
+const (
+	GO_TYPE_INT       GoPrimitives = iota
+	GO_TYPE_STRING    GoPrimitives = iota
+	GO_TYPE_FLOAT     GoPrimitives = iota
+	GO_TYPE_BOOL      GoPrimitives = iota
+	GO_TYPE_INTERFACE GoPrimitives = iota
+)
+
+type GoPrimitives uint8
+
+func (g GoPrimitives) getString() string {
+	switch g {
+	case GO_TYPE_INT:
+		return "int32"
+	case GO_TYPE_STRING:
+		return "string"
+	case GO_TYPE_FLOAT:
+		return "float64"
+	case GO_TYPE_BOOL:
+		return "bool"
+	case GO_TYPE_INTERFACE:
+		return "interface{}"
+	default:
+		return "interface{}"
+	}
+}
+
+// GoField represents a struct field in Go
 type GoField struct {
 	Name        string
-	Type        string
+	Type        GoType
 	JsonName    string
 	IsPrimitive bool
 }
 
+// GoType represents a type in Go
+// It can be a primitive type or a complex type
+type GoType struct {
+	isArray       bool
+	IsPrimitive   bool
+	PrimitiveType GoPrimitives
+	CustomType    string
+}
+
+// getString returns the string representation of the type
+// For example for an it array it returns an "[]int32"
+func (g *GoType) getString() string {
+	out := ""
+	if g.isArray {
+		out += "[]"
+	}
+
+	if g.IsPrimitive {
+		out += g.PrimitiveType.getString()
+	} else {
+		out += g.CustomType
+	}
+
+	return out
+}
+
+// GoStruct represents a struct in Go
 type GoStruct struct {
 	Name   string
 	Fields []GoField
 }
 
+// CalcHash calculates the hash of the struct
+// It is used to check if the struct already exists inside the structs map
 func (g *GoStruct) CalcHash() string {
 	input := ""
 	for _, field := range g.Fields {
-		input += "\\name: " + field.Name + "\\type: " + field.Type
+		input += "\\name: " + field.Name + "\\type: " + field.Type.getString()
 	}
 
 	sha256 := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(sha256[:])
 }
 
-type GoGen struct {
-	Structures map[string]GoStruct
-}
-
+// GoGenObject represents an object on the json
 type GoGenObject struct {
 	Name string
 	Obj  domain.Value
+}
+
+type Output string
+
+func (r *Output) insertHeader(packageName string) {
+	*r = Output("package " + packageName + "\n\n")
+}
+
+func (r *Output) insertStruct(goStruct GoStruct) {
+	toAdd := "type " + goStruct.Name + " struct {\n"
+	for _, field := range goStruct.Fields {
+		toAdd += "\t" + field.Name + " " +
+			field.Type.getString() + " `json:\"" + field.JsonName + "\"`\n"
+	}
+
+	toAdd += "}\n\n"
+	*r += Output(toAdd)
+}
+
+// GoGen represents the generator for Go
+// It contains the maps different structs and the package name
+type GoGen struct {
+	Structures map[string]GoStruct
 }
 
 func New() *GoGen {
 	return &GoGen{Structures: map[string]GoStruct{}}
 }
 
-func (g *GoGen) ParseObject(name string, object domain.Object) string {
+func (g *GoGen) Generate(packageName string) string {
+	structs := make([]GoStruct, 0)
+	for _, goStruct := range g.Structures {
+		structs = append(structs, goStruct)
+	}
+
+	sort.Slice(structs, func(i, j int) bool {
+		return len(structs[i].Fields) > (len(structs[j].Fields))
+	})
+
+	var output Output = ""
+	output.insertHeader(packageName)
+	for _, goStruct := range structs {
+		output.insertStruct(goStruct)
+	}
+
+	return string(output)
+}
+
+func (g *GoGen) GetOutPath(packageName string) string {
+	return packageName + string(os.PathSeparator) + packageName + ".go"
+}
+
+func (g *GoGen) InsertObject(name string, object domain.Object) {
+	g.ParseObject(name, object)
+}
+
+func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
 	newName := toCamelCase(name)
 	goStruct := GoStruct{Name: newName, Fields: []GoField{}}
 
+	// Convert map to slice to allow sorting
 	objects := make([]GoGenObject, 0)
 	for k, v := range object {
 		objects = append(objects, GoGenObject{Name: k, Obj: v})
 	}
 
+	// Sort the slice of objects by name
 	sort.Slice(objects, func(i, j int) bool {
 		return objects[i].Name < objects[j].Name
 	})
@@ -66,6 +171,8 @@ func (g *GoGen) ParseObject(name string, object domain.Object) string {
 		}
 	}
 
+	// Sort the slice of fields by name and primitive type
+	// The primitive types are sorted first
 	sort.Slice(goStruct.Fields, func(i, j int) bool {
 		if goStruct.Fields[i].IsPrimitive == goStruct.Fields[j].IsPrimitive {
 			return goStruct.Fields[i].Name < goStruct.Fields[j].Name
@@ -74,6 +181,7 @@ func (g *GoGen) ParseObject(name string, object domain.Object) string {
 		return goStruct.Fields[i].IsPrimitive
 	})
 
+	// Checks if the struct already exists
 	structure, ok := g.Structures[goStruct.CalcHash()]
 	if !ok {
 		g.Structures[goStruct.CalcHash()] = goStruct
@@ -81,95 +189,62 @@ func (g *GoGen) ParseObject(name string, object domain.Object) string {
 		newName = structure.Name
 	}
 
-	return newName
+	return GoType{isArray: false, IsPrimitive: false, CustomType: newName}
 }
 
-func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) string {
+// ParseNonPrimitiveValue parses a non primitive value
+func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) (gtype GoType) {
 	switch value.Type {
 	case domain.VALUE_OBJECT:
 		return g.ParseObject(key, value.Data.(domain.Object))
 	case domain.VALUE_ARRAY_OBJ:
 		valueArray := value.Data.([]domain.Object)
 		if len(valueArray) > 0 {
-			return "[]" + g.ParseObject(key, valueArray[0])
+			gtype = g.ParseObject(key, valueArray[0])
+			gtype.isArray = true
+			return
 		} else {
-			return "interface{}"
+			gtype = GoType{isArray: false, IsPrimitive: true}
+			return
 		}
 	default:
-		return "interface{}"
+		gtype = GoType{isArray: false, IsPrimitive: true}
+		return
 	}
 }
 
-func (g *GoGen) Generate(packageName string) string {
-	result := ""
-
-	structs := make([]GoStruct, 0)
-	for _, goStruct := range g.Structures {
-		structs = append(structs, goStruct)
-	}
-
-	sort.Slice(structs, func(i, j int) bool {
-		return len(structs[i].Fields) > (len(structs[j].Fields))
-	})
-
-	result += "package " + packageName + "\n\n"
-	for _, goStruct := range structs {
-		result += "type " + goStruct.Name + " struct {\n"
-		for _, field := range goStruct.Fields {
-			result += "\t" + field.Name + " " +
-				field.Type + " `json:\"" + field.JsonName + "\"`\n"
-		}
-		result += "}\n\n"
-	}
-
-	return result
-}
-
-func (g *GoGen) GetOutPath(packageName string) string {
-	return packageName + "/" + packageName + ".go"
-}
-
-func IsPrimitiveValue(value domain.Value) bool {
-	switch value.Type {
-	case domain.VALUE_INTEGER, domain.VALUE_STRING, domain.VALUE_FLOAT, domain.VALUE_BOOL,
-		domain.VALUE_ARRAY_BOOL, domain.VALUE_ARRAY_FLOAT, domain.VALUE_ARRAY_INT, domain.VALUE_ARRAY_STR, domain.VALUE_NULL:
-		return true
-	default:
-		return false
-	}
-}
-
-func ParsePrimitiveValue(value domain.Value) string {
+func ParsePrimitiveValue(value domain.Value) (gtype GoType) {
+	gtype.IsPrimitive = true
 	switch value.Type {
 	case domain.VALUE_INTEGER:
-		return "int32"
+		gtype.PrimitiveType = GO_TYPE_INT
+		return
 	case domain.VALUE_STRING:
-		return "string"
+		gtype.PrimitiveType = GO_TYPE_STRING
+		return
 	case domain.VALUE_FLOAT:
-		return "float64"
+		gtype.PrimitiveType = GO_TYPE_FLOAT
+		return
 	case domain.VALUE_BOOL:
-		return "bool"
+		gtype.PrimitiveType = GO_TYPE_BOOL
+		return
 	case domain.VALUE_NULL:
-		return "interface{}"
+		gtype.PrimitiveType = GO_TYPE_INTERFACE
+		return
 	case domain.VALUE_ARRAY_INT:
-		return "[]int32"
+		gtype.isArray = true
+		gtype.PrimitiveType = GO_TYPE_INT
+		return
 	case domain.VALUE_ARRAY_STR:
-		return "[]string"
+		gtype.isArray = true
+		gtype.PrimitiveType = GO_TYPE_STRING
+		return
 	case domain.VALUE_ARRAY_FLOAT:
-		return "[]float64"
+		gtype.isArray = true
+		gtype.PrimitiveType = GO_TYPE_FLOAT
+		return
 	default:
-		return "interface{}"
+		gtype.PrimitiveType = GO_TYPE_INTERFACE
+		return
 	}
-}
-
-func toCamelCase(s string) string {
-	words := strings.FieldsFunc(s, func(r rune) bool {
-		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
-	})
-
-	for i, word := range words {
-		words[i] = strings.Title(word)
-	}
-
-	return strings.Join(words, "")
 }
