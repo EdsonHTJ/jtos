@@ -3,6 +3,7 @@ package gogen
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"sort"
 
@@ -144,11 +145,12 @@ func (g *GoGen) GetOutPath(packageName string) string {
 	return packageName + string(os.PathSeparator) + packageName + ".go"
 }
 
-func (g *GoGen) InsertObject(name string, object domain.Object) {
-	g.ParseObject(name, object)
+func (g *GoGen) InsertObject(name string, object domain.Object) error {
+	_, err := g.ParseObject(name, object)
+	return err
 }
 
-func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
+func (g *GoGen) ParseObject(name string, object domain.Object) (GoType, error) {
 	newName := toCamelCase(name)
 	goStruct := GoStruct{Name: newName, Fields: []GoField{}}
 
@@ -174,7 +176,11 @@ func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
 		if IsPrimitiveValue(obj.Obj) {
 			goStruct.Fields = append(goStruct.Fields, GoField{IsPrimitive: true, Name: toCamelCase(obj.Name), Type: ParsePrimitiveValue(obj.Obj), JsonName: obj.Name})
 		} else {
-			goStruct.Fields = append(goStruct.Fields, GoField{IsPrimitive: false, Name: toCamelCase(obj.Name), Type: g.ParseNonPrimitiveValue(obj.Name, obj.Obj), JsonName: obj.Name})
+			val, err := g.ParseNonPrimitiveValue(obj.Name, obj.Obj)
+			if err != nil {
+				return GoType{}, err
+			}
+			goStruct.Fields = append(goStruct.Fields, GoField{IsPrimitive: false, Name: toCamelCase(obj.Name), Type: val, JsonName: obj.Name})
 		}
 	}
 
@@ -200,18 +206,32 @@ func (g *GoGen) ParseObject(name string, object domain.Object) GoType {
 		newName = structure.Name
 	}
 
-	return GoType{isArray: false, IsPrimitive: false, CustomType: newName}
+	return GoType{isArray: false, IsPrimitive: false, CustomType: newName}, nil
 }
 
 // ParseNonPrimitiveValue parses a non primitive value
-func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) (gtype GoType) {
+func (g *GoGen) ParseNonPrimitiveValue(key string, value domain.Value) (gtype GoType, err error) {
 	switch value.Type {
 	case domain.VALUE_OBJECT:
 		return g.ParseObject(key, value.Data.(domain.Object))
 	case domain.VALUE_ARRAY_OBJ:
-		valueArray := value.Data.([]domain.Object)
+		valueArray, ok := value.Data.([]domain.Object)
+		if !ok {
+			return GoType{}, fmt.Errorf("Error parsing array of objects")
+		}
+
 		if len(valueArray) > 0 {
-			gtype = g.ParseObject(key, valueArray[0])
+			for idx := range valueArray {
+				gtype, err = g.ParseObject(key, valueArray[idx])
+				if err == nil {
+					break
+				}
+			}
+
+			if err != nil {
+				return GoType{}, err
+			}
+
 			gtype.isArray = true
 			return
 		} else {

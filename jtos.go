@@ -50,7 +50,10 @@ func ParseJsonFile(packageName string, mainStruct string, json string, generator
 	}
 
 	response := ParseResponse{}
-	gen.InsertObject(mainStruct, object)
+	err = gen.InsertObject(mainStruct, object)
+	if err != nil {
+		return response, err
+	}
 	response.Output = gen.Generate(packageName)
 	response.RecomendedPath = gen.GetOutPath(packageName)
 

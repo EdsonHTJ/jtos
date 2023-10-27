@@ -1,6 +1,7 @@
 package gogen_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -53,4 +54,23 @@ func TestGogenParse(t *testing.T) {
 	require.True(t, strings.Contains(output, "type Car struct {"))
 	require.True(t, strings.Contains(output, "Model string `json:\"model\"`"))
 	require.True(t, strings.Contains(output, "Year int32 `json:\"year\"`"))
+}
+
+func TestGogenWithFile(t *testing.T) {
+	bt, err := os.ReadFile("../../data.json")
+	require.NoError(t, err)
+
+	jsonstr := string(bt)
+
+	tokens, err := lexer.GetTokens(jsonstr)
+	require.NoError(t, err)
+
+	object, err := mapper.MapTokensToObject(tokens)
+	require.NoError(t, err)
+
+	gogen := gogen.New()
+	gogen.ParseObject("Data", object)
+
+	output := gogen.Generate("test")
+	os.WriteFile("../../test.go", []byte(output), 0644)
 }
